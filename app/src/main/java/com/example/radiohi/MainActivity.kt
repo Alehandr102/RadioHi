@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -79,28 +80,21 @@ data class Station(
     val url: String
 )
 
-val stations = mutableStateListOf(
-    // === ПОП / ХИТЫ ===
+val defaultStations = listOf(
     Station("Европа Плюс", "Поп / Хиты", "http://ep256.hostingradio.ru:8052/europaplus256.mp3"),
     Station("Русское Радио", "Русский Поп", "https://rusradio.hostingradio.ru/rusradio128.mp3"),
     Station("Record Russian Hits", "Русские хиты", "https://radiorecord.hostingradio.ru/russianhits64.aacp"),
     Station("Record Big Hits", "Мировые хиты", "https://radiorecord.hostingradio.ru/bighits96.aacp"),
     Station("Record Gold", "Золотые хиты", "https://radiorecord.hostingradio.ru/gold96.aacp"),
-
-    // === РОК ===
     Station("Record Rock", "Рок", "https://radiorecord.hostingradio.ru/rock96.aacp"),
     Station("Наше Радио", "Русский Рок", "http://nashe1.hostingradio.ru/nashe-128.mp3"),
     Station("Record Hardstyle", "Hardstyle", "https://radiorecord.hostingradio.ru/teo96.aacp"),
-
-    // === РЕТРО / 80-90-е ===
     Station("Record 80-х", "80-е", "https://radiorecord.hostingradio.ru/198096.aacp"),
     Station("Record 90-х", "Супердискотека 90-х", "https://radiorecord.hostingradio.ru/sd9096.aacp"),
     Station("Record 00-х", "2000-е", "https://radiorecord.hostingradio.ru/200096.aacp"),
     Station("Ретро Хит", "Ретро", "http://air.volna.top/Retro"),
     Station("Record Руки Вверх", "Руки Вверх!", "https://radiorecord.hostingradio.ru/rv96.aacp"),
     Station("Record Нафталин FM", "Старые хиты", "https://radiorecord.hostingradio.ru/naft96.aacp"),
-
-    // === ЭЛЕКТРОННАЯ / ТАНЦЕВАЛЬНАЯ ===
     Station("Record", "Dance / Electronic", "https://radiorecord.hostingradio.ru/rr_main96.aacp"),
     Station("Record EDM", "EDM", "https://radiorecord.hostingradio.ru/club96.aacp"),
     Station("Record Eurodance", "Eurodance", "https://radiorecord.hostingradio.ru/eurodance96.aacp"),
@@ -110,29 +104,21 @@ val stations = mutableStateListOf(
     Station("Record Tech House", "Tech House", "https://radiorecord.hostingradio.ru/techouse96.aacp"),
     Station("Record Deep", "Deep House", "https://radiorecord.hostingradio.ru/deep96.aacp"),
     Station("Record Tropical", "Tropical House", "https://radiorecord.hostingradio.ru/trop96.aacp"),
-
-    // === ТРАНС ===
     Station("Record Trance", "Trance", "https://radiorecord.hostingradio.ru/tm96.aacp"),
     Station("Record Uplifting", "Uplifting Trance", "https://radiorecord.hostingradio.ru/uplift96.aacp"),
     Station("Record Armin van Buuren", "ASOT", "https://radiorecord.hostingradio.ru/armin96.aacp"),
     Station("Record Tiesto", "Tiesto", "https://radiorecord.hostingradio.ru/tiesto96.aacp"),
     Station("Record David Guetta", "David Guetta", "https://radiorecord.hostingradio.ru/guetta96.aacp"),
     Station("Record Martin Garrix", "Martin Garrix", "https://radiorecord.hostingradio.ru/martingarrix64.aacp"),
-
-    // === РЕП / ХИП-ХОП ===
     Station("Record Rap Hits", "Rap", "https://radiorecord.hostingradio.ru/rap96.aacp"),
     Station("Record Black Rap", "Black Rap", "https://radiorecord.hostingradio.ru/yo96.aacp"),
     Station("Record Phonk", "Phonk", "https://radiorecord.hostingradio.ru/phonk96.aacp"),
-
-    // === ЧИЛАУТ / СПОКОЙНАЯ ===
     Station("Record Chill-Out", "Chill-Out", "https://radiorecord.hostingradio.ru/chil96.aacp"),
     Station("Record Lo-Fi", "Lo-Fi", "https://radiorecord.hostingradio.ru/lofi96.aacp"),
     Station("Record Ambient", "Ambient", "https://radiorecord.hostingradio.ru/ambient96.aacp"),
     Station("Record Organic", "Organic House", "https://radiorecord.hostingradio.ru/organic96.aacp"),
     Station("Jazz 89.1", "Джаз", "http://nashe1.hostingradio.ru/jazz-128.mp3"),
     Station("Record Симфония FM", "Классика", "https://radiorecord.hostingradio.ru/symph96.aacp"),
-
-    // === ЖАНРОВЫЕ / НИШЕВЫЕ ===
     Station("Record GOA/PSY", "Psy-Trance", "https://radiorecord.hostingradio.ru/goa96.aacp"),
     Station("Record Dubstep", "Dubstep", "https://radiorecord.hostingradio.ru/dub96.aacp"),
     Station("Record Drum&Bass", "D'n'B", "https://radiorecord.hostingradio.ru/drumhits96.aacp"),
@@ -141,19 +127,14 @@ val stations = mutableStateListOf(
     Station("Record Reggae", "Reggae", "https://radiorecord.hostingradio.ru/reggae96.aacp"),
     Station("Record Disco/Funk", "Disco & Funk", "https://radiorecord.hostingradio.ru/discofunk96.aacp"),
     Station("Record Pirate Station", "Drum&Bass", "https://radiorecord.hostingradio.ru/ps96.aacp"),
-
-    // === НОВОСТИ / РАЗГОВОРНОЕ ===
     Station("Вести FM", "Новости", "http://icecast.vgtrk.cdnvideo.ru/vestifm_mp3_192kbps"),
     Station("Маяк", "Новости / Разговорное", "http://icecast.vgtrk.cdnvideo.ru/mayakfm_mp3_192kbps"),
-
-    // === ШАНСОН ===
     Station("Шансон", "Шансон", "http://chanson.hostingradio.ru:8041/chanson256.mp3"),
-
-    // === МЕГАПОЛИС ===
     Station("Мегаполис FM", "Электронная", "http://109.239.129.43:8010/megapolis-48.aac")
 )
 
-// Загружаем все станции в очередь, чтобы появились кнопки ⏮⏭ в шторке
+val stations = mutableStateListOf<Station>()
+
 fun playStation(player: Player, station: Station, allStations: List<Station>) {
     val mediaItems = allStations.map { st ->
         MediaItem.Builder()
@@ -177,18 +158,22 @@ fun playStation(player: Player, station: Station, allStations: List<Station>) {
 @Composable
 fun RadioScreen() {
     val context = LocalContext.current
+    val scope = remember { CoroutineScope(Dispatchers.IO) }
 
-    // Загружаем сохранённые станции при первом запуске
+    // Загружаем станции при первом запуске
     LaunchedEffect(Unit) {
-        val saved = StationStorage.load(context)
-        if (saved.isNotEmpty()) {
-            stations.clear()
-            stations.addAll(saved)
+        if (stations.isEmpty()) {
+            val saved = StationStorage.load(context)
+            if (saved.isNotEmpty()) {
+                stations.addAll(saved)
+            } else {
+                stations.addAll(defaultStations)
+            }
         }
     }
 
     var searchQuery by remember { mutableStateOf("") }
-    var selectedStation by remember { mutableStateOf<Station?>(stations.firstOrNull()) }
+    var selectedStation by remember { mutableStateOf<Station?>(null) }
     var isPlaying by remember { mutableStateOf(false) }
     var showAddDialog by remember { mutableStateOf(false) }
     var newName by remember { mutableStateOf("") }
@@ -201,11 +186,58 @@ fun RadioScreen() {
             context,
             SessionToken(context, ComponentName(context, RadioService::class.java))
         ).buildAsync()
-        future.addListener({ controller = future.get() }, ContextCompat.getMainExecutor(context))
+        future.addListener({
+            val ctrl = future.get()
+            controller = ctrl
+
+            // Синхронизируем состояние при подключении
+            val currentMediaItem = ctrl.currentMediaItem
+            if (currentMediaItem != null) {
+                val title = currentMediaItem.mediaMetadata.title?.toString() ?: ""
+                val found = stations.find { it.name == title }
+                if (found != null) {
+                    selectedStation = found
+                    isPlaying = ctrl.playWhenReady
+                }
+            }
+        }, ContextCompat.getMainExecutor(context))
         onDispose { controller?.release() }
     }
 
-    // Фильтрация по поиску
+    // Слушатель плеера
+    DisposableEffect(controller) {
+        if (controller != null) {
+            val listener = object : Player.Listener {
+                override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
+                    mediaItem?.let { item ->
+                        val title = item.mediaMetadata.title?.toString() ?: ""
+                        val found = stations.find { it.name == title }
+                        if (found != null) {
+                            selectedStation = found
+                        }
+                    }
+                }
+
+                override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
+                    isPlaying = playWhenReady
+                }
+            }
+            controller!!.addListener(listener)
+            onDispose {
+                controller!!.removeListener(listener)
+            }
+        } else {
+            onDispose { }
+        }
+    }
+
+    // Выбираем первую станцию когда список загрузился
+    LaunchedEffect(stations.size) {
+        if (selectedStation == null && stations.isNotEmpty()) {
+            selectedStation = stations[0]
+        }
+    }
+
     val filteredStations = remember(searchQuery) {
         if (searchQuery.isBlank()) stations
         else stations.filter {
@@ -283,7 +315,21 @@ fun RadioScreen() {
                 singleLine = true
             )
 
+            val listState = rememberLazyListState()
+
+// Прокрутка к активной станции
+            LaunchedEffect(selectedStation, filteredStations) {
+                if (selectedStation != null && filteredStations.isNotEmpty()) {
+                    val index = filteredStations.indexOf(selectedStation)
+                    if (index >= 0) {
+                        // Сначала мгновенно переходим, потом плавно
+                        listState.scrollToItem(index)
+                    }
+                }
+            }
+
             LazyColumn(
+                state = listState,
                 modifier = Modifier.weight(1f),
                 contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -302,8 +348,7 @@ fun RadioScreen() {
                             if (selectedStation == station) {
                                 selectedStation = stations.firstOrNull()
                             }
-                            // Сохраняем после удаления
-                            CoroutineScope(Dispatchers.IO).launch {
+                            scope.launch {
                                 StationStorage.save(context, stations)
                             }
                         }
@@ -313,7 +358,6 @@ fun RadioScreen() {
         }
     }
 
-    // Диалог добавления
     if (showAddDialog) {
         AlertDialog(
             onDismissRequest = { showAddDialog = false },
@@ -345,8 +389,7 @@ fun RadioScreen() {
                     onClick = {
                         if (newName.isNotBlank() && newUrl.isNotBlank()) {
                             stations.add(Station(newName, "Моя станция", newUrl))
-                            // Сохраняем после добавления
-                            CoroutineScope(Dispatchers.IO).launch {
+                            scope.launch {
                                 StationStorage.save(context, stations)
                             }
                             newName = ""
